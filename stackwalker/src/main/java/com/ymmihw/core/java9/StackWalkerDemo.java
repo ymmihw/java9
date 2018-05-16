@@ -53,13 +53,13 @@ public class StackWalkerDemo {
   }
 
   public List<StackFrame> walkExample2(Stream<StackFrame> stackFrameStream) {
-    return stackFrameStream.filter(frame -> frame.getClassName().contains("com.baeldung"))
+    return stackFrameStream.filter(frame -> frame.getClassName().contains("com.ymmihw"))
         .collect(Collectors.toList());
   }
 
   public String walkExample3(Stream<StackFrame> stackFrameStream) {
     return stackFrameStream
-        .filter(frame -> frame.getClassName().contains("com.baeldung")
+        .filter(frame -> frame.getClassName().contains("com.ymmihw")
             && frame.getClassName().endsWith("Test"))
         .findFirst().map(frame -> frame.getClassName() + "#" + frame.getMethodName() + ", Line "
             + frame.getLineNumber())

@@ -11,3 +11,4 @@ completablefuture-improvements | [Java 9 CompletableFuture API Improvements](htt
 optional-improvements | [Java 9 Optional API Additions](http://www.baeldung.com/java-9-optional)
 reactive-streams | [Java 9 Reactive Streams](http://www.baeldung.com/java-9-reactive-streams)
 objects-improvements | [Java 9 java.util.Objects Additions](http://www.baeldung.com/java-9-objects-new)
+compact-string | [Compact Strings in Java 9](http://www.baeldung.com/java-9-compact-string)

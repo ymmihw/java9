@@ -8,3 +8,4 @@ collections-factory-methods | [Java 9 Convenience Factory Methods for Collection
 process-api-improvements | [Java 9 Process API Improvements](http://www.baeldung.com/java-9-process-api)
 stackwalker | [Introduction to Java 9 StackWalking API](http://www.baeldung.com/java-9-stackwalking-api)
 completablefuture-improvements | [Java 9 CompletableFuture API Improvements](http://www.baeldung.com/java-9-completablefuture)
+optional-improvements | [Java 9 Optional API Additions](http://www.baeldung.com/java-9-optional)

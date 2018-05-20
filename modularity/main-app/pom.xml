@@ -14,8 +14,6 @@
  <url>http://maven.apache.org</url>
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  <maven.compiler.source>9</maven.compiler.source>
-  <maven.compiler.target>9</maven.compiler.target>
  </properties>
  <dependencies>
   <dependency>
@@ -24,20 +22,4 @@
    <version>0.0.1-SNAPSHOT</version>
   </dependency>
  </dependencies>
- <build>
-  <plugins>
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-jar-plugin</artifactId>
-    <configuration>
-     <archive>
-      <manifest>
-       <mainClass>com.ymmihw.core.java9.main.MainApp</mainClass>
-      </manifest>
-     </archive>
-     <outputDirectory>../libs</outputDirectory>
-    </configuration>
-   </plugin>
-  </plugins>
- </build>
 </project>

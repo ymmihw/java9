@@ -15,3 +15,4 @@ compact-string | [Compact Strings in Java 9](http://www.baeldung.com/java-9-comp
 variable-handles | [Java 9 Variable Handles Demystified](http://www.baeldung.com/java-variable-handles)
 modularity | [A Guide to Java 9 Modularity](http://www.baeldung.com/java-9-modularity)
 httpclient | [Exploring the New HTTP Client in Java 9](http://www.baeldung.com/java-9-http-client)
+java-modules-decoupling-design-strategies | [Design Strategies for Decoupling Java Modules](https://www.baeldung.com/java-modules-decoupling-design-strategies)

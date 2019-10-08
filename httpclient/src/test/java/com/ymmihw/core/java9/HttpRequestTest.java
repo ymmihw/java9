@@ -1,21 +1,23 @@
 package com.ymmihw.core.java9;
 
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpResponse;
-import org.junit.Test;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 /**
  * Created by adam.
@@ -29,7 +31,7 @@ public class HttpRequestTest {
         HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/get")).GET().build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
   }
@@ -40,7 +42,7 @@ public class HttpRequestTest {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://stackoverflow.com"))
         .version(HttpClient.Version.HTTP_2).GET().build();
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
     assertThat(response.version(), equalTo(HttpClient.Version.HTTP_2));
@@ -53,7 +55,7 @@ public class HttpRequestTest {
         .version(HttpClient.Version.HTTP_2).GET().build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.version(), equalTo(HttpClient.Version.HTTP_1_1));
   }
@@ -65,7 +67,7 @@ public class HttpRequestTest {
         .headers("key1", "value1", "key2", "value2").GET().build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
   }
@@ -77,7 +79,7 @@ public class HttpRequestTest {
         .timeout(Duration.of(10, SECONDS)).GET().build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
   }
@@ -86,10 +88,10 @@ public class HttpRequestTest {
   public void shouldReturnNoContentWhenPostWithNoBody()
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/post"))
-        .POST(HttpRequest.noBody()).build();
+        .POST(BodyPublishers.noBody()).build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
   }
@@ -99,10 +101,10 @@ public class HttpRequestTest {
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/post"))
         .headers("Content-Type", "text/plain;charset=UTF-8")
-        .POST(HttpRequest.BodyProcessor.fromString("Sample request body")).build();
+        .POST(BodyPublishers.ofString("Sample request body")).build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
     assertThat(response.body(), containsString("Sample request body"));
@@ -114,11 +116,10 @@ public class HttpRequestTest {
     byte[] sampleData = "Sample request body".getBytes();
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/post"))
         .headers("Content-Type", "text/plain;charset=UTF-8")
-        .POST(HttpRequest.BodyProcessor.fromInputStream(() -> new ByteArrayInputStream(sampleData)))
-        .build();
+        .POST(BodyPublishers.ofInputStream(() -> new ByteArrayInputStream(sampleData))).build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
     assertThat(response.body(), containsString("Sample request body"));
@@ -130,10 +131,10 @@ public class HttpRequestTest {
     byte[] sampleData = "Sample request body".getBytes();
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/post"))
         .headers("Content-Type", "text/plain;charset=UTF-8")
-        .POST(HttpRequest.BodyProcessor.fromByteArray(sampleData)).build();
+        .POST(BodyPublishers.ofByteArray(sampleData)).build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
     assertThat(response.body(), containsString("Sample request body"));
@@ -144,11 +145,10 @@ public class HttpRequestTest {
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/post"))
         .headers("Content-Type", "text/plain;charset=UTF-8")
-        .POST(HttpRequest.BodyProcessor.fromFile(Paths.get("src/test/resources/sample.txt")))
-        .build();
+        .POST(BodyPublishers.ofFile(Paths.get("src/test/resources/sample.txt"))).build();
 
     HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
     assertThat(response.body(), containsString("Sample file content"));

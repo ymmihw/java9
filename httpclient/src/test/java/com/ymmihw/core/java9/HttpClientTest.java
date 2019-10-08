@@ -14,6 +14,11 @@ import java.net.PasswordAuthentication;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -22,9 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import org.junit.Test;
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpResponse;
 
 /**
  * Created by adam.
@@ -36,10 +38,10 @@ public class HttpClientTest {
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/post"))
         .headers("Content-Type", "text/plain;charset=UTF-8")
-        .POST(HttpRequest.BodyProcessor.fromString("Sample body")).build();
+        .POST(BodyPublishers.ofString("Sample body")).build();
 
     HttpResponse<String> response = HttpClient.newBuilder().proxy(ProxySelector.getDefault())
-        .build().send(request, HttpResponse.BodyHandler.asString());
+        .build().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
     assertThat(response.body(), containsString("Sample body"));
@@ -51,7 +53,7 @@ public class HttpClientTest {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("http://stackoverflow.com"))
         .version(HttpClient.Version.HTTP_1_1).GET().build();
     HttpResponse<String> response =
-        HttpClient.newBuilder().build().send(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newBuilder().build().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_MOVED_PERM));
     assertThat(response.body(), containsString("https://stackoverflow.com/"));
@@ -62,12 +64,11 @@ public class HttpClientTest {
       throws IOException, InterruptedException, URISyntaxException {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("http://stackoverflow.com"))
         .version(HttpClient.Version.HTTP_1_1).GET().build();
-    HttpResponse<String> response =
-        HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build().send(request,
-            HttpResponse.BodyHandler.asString());
+    HttpResponse<String> response = HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.ALWAYS).build().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
-    assertThat(response.finalRequest().uri().toString(), equalTo("https://stackoverflow.com/"));
+    assertThat(response.request().uri().toString(), equalTo("https://stackoverflow.com/"));
   }
 
   @Test
@@ -80,7 +81,7 @@ public class HttpClientTest {
       protected PasswordAuthentication getPasswordAuthentication() {
         return new PasswordAuthentication("postman", "password".toCharArray());
       }
-    }).build().send(request, HttpResponse.BodyHandler.asString());
+    }).build().send(request, BodyHandlers.ofString());
 
     assertThat(response.statusCode(), equalTo(HttpURLConnection.HTTP_OK));
   }
@@ -90,9 +91,9 @@ public class HttpClientTest {
       throws URISyntaxException, InterruptedException, ExecutionException {
     HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/post"))
         .headers("Content-Type", "text/plain;charset=UTF-8")
-        .POST(HttpRequest.BodyProcessor.fromString("Sample body")).build();
+        .POST(BodyPublishers.ofString("Sample body")).build();
     CompletableFuture<HttpResponse<String>> response =
-        HttpClient.newBuilder().build().sendAsync(request, HttpResponse.BodyHandler.asString());
+        HttpClient.newBuilder().build().sendAsync(request, BodyHandlers.ofString());
 
     assertThat(response.get().statusCode(), equalTo(HttpURLConnection.HTTP_OK));
   }
@@ -106,13 +107,13 @@ public class HttpClientTest {
     ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     CompletableFuture<HttpResponse<String>> response1 = HttpClient.newBuilder()
-        .executor(executorService).build().sendAsync(request, HttpResponse.BodyHandler.asString());
+        .executor(executorService).build().sendAsync(request, BodyHandlers.ofString());
 
     CompletableFuture<HttpResponse<String>> response2 = HttpClient.newBuilder()
-        .executor(executorService).build().sendAsync(request, HttpResponse.BodyHandler.asString());
+        .executor(executorService).build().sendAsync(request, BodyHandlers.ofString());
 
     CompletableFuture<HttpResponse<String>> response3 = HttpClient.newBuilder()
-        .executor(executorService).build().sendAsync(request, HttpResponse.BodyHandler.asString());
+        .executor(executorService).build().sendAsync(request, BodyHandlers.ofString());
 
     CompletableFuture.allOf(response1, response2, response3).join();
 
@@ -128,11 +129,11 @@ public class HttpClientTest {
         HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/get")).GET().build();
 
     HttpClient httpClient = HttpClient.newBuilder()
-        .cookieManager(new CookieManager(null, CookiePolicy.ACCEPT_NONE)).build();
+        .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_NONE)).build();
 
-    httpClient.send(request, HttpResponse.BodyHandler.asString());
-
-    assertThat(httpClient.cookieManager().get().getCookieStore().getCookies(), empty());
+    httpClient.send(request, BodyHandlers.ofString());
+    CookieManager cookieManager = (CookieManager) httpClient.cookieHandler().get();
+    assertThat(cookieManager.getCookieStore().getCookies(), empty());
   }
 
   @Test
@@ -142,11 +143,11 @@ public class HttpClientTest {
         HttpRequest.newBuilder().uri(new URI("https://postman-echo.com/get")).GET().build();
 
     HttpClient httpClient = HttpClient.newBuilder()
-        .cookieManager(new CookieManager(null, CookiePolicy.ACCEPT_ALL)).build();
+        .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ALL)).build();
 
-    httpClient.send(request, HttpResponse.BodyHandler.asString());
-
-    assertThat(httpClient.cookieManager().get().getCookieStore().getCookies(), not(empty()));
+    httpClient.send(request, BodyHandlers.ofString());
+    CookieManager cookieManager = (CookieManager) httpClient.cookieHandler().get();
+    assertThat(cookieManager.getCookieStore().getCookies(), not(empty()));
   }
 
   @Test
@@ -158,8 +159,9 @@ public class HttpClientTest {
     HttpClient client = HttpClient.newHttpClient();
 
     List<CompletableFuture<String>> futures = targets.stream()
-        .map(target -> client.sendAsync(HttpRequest.newBuilder(target).GET().build(),
-            HttpResponse.BodyHandler.asString()).thenApply(response -> response.body()))
+        .map(target -> client
+            .sendAsync(HttpRequest.newBuilder(target).GET().build(), BodyHandlers.ofString())
+            .thenApply(response -> response.body()))
         .collect(Collectors.toList());
 
     CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();

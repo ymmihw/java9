@@ -4,16 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpRequest.BodyProcessor;
-import jdk.incubator.http.HttpResponse;
-import jdk.incubator.http.HttpResponse.BodyHandler;
 
 /**
  *
@@ -33,7 +33,7 @@ public class HttpClientExample {
     URI httpURI = new URI("http://jsonplaceholder.typicode.com/posts/1");
     HttpRequest request =
         HttpRequest.newBuilder(httpURI).GET().headers("Accept-Enconding", "gzip, deflate").build();
-    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandler.asString());
+    HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
     String responseBody = response.body();
     int responseStatusCode = response.statusCode();
     System.out.println(responseBody);
@@ -44,8 +44,8 @@ public class HttpClientExample {
     HttpClient client = HttpClient.newBuilder().build();
     HttpRequest request =
         HttpRequest.newBuilder(new URI("http://jsonplaceholder.typicode.com/posts"))
-            .POST(BodyProcessor.fromString("Sample Post Request")).build();
-    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandler.asString());
+            .POST(BodyPublishers.ofString("Sample Post Request")).build();
+    HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
     String responseBody = response.body();
     System.out.println(responseBody);
   }
@@ -55,7 +55,7 @@ public class HttpClientExample {
     URI httpURI = new URI("http://jsonplaceholder.typicode.com/posts/1");
     HttpRequest request = HttpRequest.newBuilder(httpURI).GET().build();
     CompletableFuture<HttpResponse<String>> futureResponse =
-        client.sendAsync(request, HttpResponse.BodyHandler.asString());
+        client.sendAsync(request, BodyHandlers.ofString());
   }
 
   public static void asynchronousMultipleRequests() throws URISyntaxException {
@@ -65,7 +65,7 @@ public class HttpClientExample {
     List<CompletableFuture<File>> futures = targets.stream()
         .map(target -> client
             .sendAsync(HttpRequest.newBuilder(target).GET().build(),
-                BodyHandler.asFile(Paths.get("base", target.getPath())))
+                BodyHandlers.ofFile(Paths.get("base", target.getPath())))
             .thenApply(response -> response.body()).thenApply(path -> path.toFile()))
         .collect(Collectors.toList());
   }

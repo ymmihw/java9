@@ -4,7 +4,6 @@
  <modelVersion>4.0.0</modelVersion>
  <artifactId>consumermodule</artifactId>
  <packaging>jar</packaging>
- <version>1.0</version>
 
  <parent>
   <groupId>com.ymmihw.core</groupId>
@@ -20,12 +19,4 @@
   </dependency>
  </dependencies>
 
- <build>
-  <plugins>
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-   </plugin>
-  </plugins>
- </build>
 </project>

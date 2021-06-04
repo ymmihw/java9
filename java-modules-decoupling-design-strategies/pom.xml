@@ -17,6 +17,7 @@
  <dependencies>
  </dependencies>
  <modules>
-  <module>ddd</module>
+  <module>decoupling-pattern1</module>
+  <module>decoupling-pattern2</module>
  </modules>
 </project>

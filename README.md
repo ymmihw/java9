@@ -16,3 +16,5 @@ variable-handles | [Java 9 Variable Handles Demystified](http://www.baeldung.com
 modularity | [A Guide to Java 9 Modularity](http://www.baeldung.com/java-9-modularity)
 httpclient | [Exploring the New HTTP Client in Java 9](http://www.baeldung.com/java-9-http-client)
 java-modules-decoupling-design-strategies | [Design Strategies for Decoupling Java Modules](https://www.baeldung.com/java-modules-decoupling-design-strategies)
+java9-multi-release-jar | [Multi-Release JAR Files with Maven](https://www.baeldung.com/maven-multi-release-jars)
+ | [Understanding Java 9 Multi-Release Jar File with Example](https://www.logicbig.com/tutorials/core-java-tutorial/java-9-changes/multi-release-jars.html)

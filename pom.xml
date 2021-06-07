@@ -62,5 +62,6 @@
         <module>variable-handles</module>
         <module>java-modules-decoupling-design-strategies</module>
         <module>java9-multi-release-jar</module>
+        <module>java9-unnamed-modules</module>
     </modules>
 </project>

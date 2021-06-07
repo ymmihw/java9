@@ -20,3 +20,4 @@ java-modules-decoupling-design-strategies | [Design Strategies for Decoupling Ja
 java9-multi-release-jar | [Multi-Release JAR Files with Maven](https://www.baeldung.com/maven-multi-release-jars)
 | | [Understanding Java 9 Multi-Release Jar File with Example](https://www.logicbig.com/tutorials/core-java-tutorial/java-9-changes/multi-release-jars.html)
 | | [Multi-Release Jar Files](https://www.baeldung.com/java-multi-release-jar)
+java9-unnamed-modules | [Java 9 Modules - The Unnamed Module](https://www.logicbig.com/tutorials/core-java-tutorial/modules/unnamed-modules.html) 

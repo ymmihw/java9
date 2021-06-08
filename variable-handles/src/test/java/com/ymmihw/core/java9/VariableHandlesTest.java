@@ -3,7 +3,7 @@ package com.ymmihw.core.java9;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VariableHandlesTest {
 

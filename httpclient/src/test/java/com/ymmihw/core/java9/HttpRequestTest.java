@@ -3,7 +3,7 @@ package com.ymmihw.core.java9;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -17,7 +17,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by adam.
@@ -57,7 +57,7 @@ public class HttpRequestTest {
     HttpResponse<String> response =
         HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
-    assertThat(response.version(), equalTo(HttpClient.Version.HTTP_1_1));
+    assertThat(response.version(), equalTo(HttpClient.Version.HTTP_2));
   }
 
   @Test

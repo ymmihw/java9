@@ -1,10 +1,10 @@
 package com.ymmihw.core.java9.stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.function.Function;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CollectorImprovementUnitTest {
   @Test
